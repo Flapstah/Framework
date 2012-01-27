@@ -46,13 +46,25 @@ endif (UNIX)
 #get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 #DBG_MSG("INCLUDE_DIRECTORIES = [${dirs}]")
 #DBG_MSG("LIBS = [${LIBS}]")
-add_executable (test main.cpp
+set(PLATFORM_INDEPENDENT_SOURCES
  	engine/independent/common/stdafx.cpp
  	engine/independent/input/keyboard.cpp
 	engine/independent/graphics/display.cpp
 	engine/independent/kernel/time/realtimeclock.cpp
 	engine/independent/kernel/time/timer.cpp
 	engine/independent/kernel/time/timesource.cpp
-	engine/windows/kernel/time/platform_systemclock.cpp)
+	)
+if (WIN32)
+set(PLATFORM_SPECIFIC_SOURCES
+	engine/windows/kernel/time/platform_systemclock.cpp
+	)
+endif (WIN32)
+if (UNIX)
+set(PLATFORM_SPECIFIC_SOURCES
+	engine/linux/kernel/time/platform_systemclock.cpp
+	)
+endif (UNIX)
+
+add_executable (test main.cpp ${PLATFORM_INDEPENDENT_SOURCES} ${PLATFORM_SPECIFIC_SOURCES} )
 target_link_libraries (test ${LIBS})
 
