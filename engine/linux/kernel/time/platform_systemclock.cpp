@@ -1,3 +1,4 @@
+#include "common/stdafx.h"
 #include <sys/time.h>
 
 #include "common/types.h"
@@ -31,7 +32,7 @@ namespace engine
 
 	//============================================================================
 
-	double CRealTimeClock::Platform_GetTimePrecise(void)
+	double CRealTimeClock::Platform_GetTimePrecise(void) const
 	{
 		::timeval time;
 
