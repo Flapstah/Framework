@@ -45,11 +45,11 @@ namespace engine
 		::time_t absoluteTime;
 		::time(&absoluteTime);
 
-		::tm localTime;
-		::localtime_s(&localTime, &absoluteTime);
+		::tm* pLocalTime;
+		pLocalTime = ::localtime(&absoluteTime);
 
 		memset(m_localDate, 0, REAL_TIME_CLOCK_DATE_BUFFER_SIZE);
-		::strftime(m_localDate, REAL_TIME_CLOCK_DATE_BUFFER_SIZE, "%d/%m/%Y", &localTime);
+		::strftime(m_localDate, REAL_TIME_CLOCK_DATE_BUFFER_SIZE, "%d/%m/%Y", pLocalTime);
 		return m_localDate;
 	}
 
@@ -60,11 +60,11 @@ namespace engine
 		::time_t absoluteTime;
 		::time(&absoluteTime);
 
-		::tm localTime;
-		::localtime_s(&localTime, &absoluteTime);
+		::tm* pLocalTime;
+		pLocalTime = ::localtime(&absoluteTime);
 
 		memset(m_localTime, 0, REAL_TIME_CLOCK_TIME_BUFFER_SIZE);
-		::strftime(m_localTime, REAL_TIME_CLOCK_TIME_BUFFER_SIZE, "%H:%M:%S", &localTime);
+		::strftime(m_localTime, REAL_TIME_CLOCK_TIME_BUFFER_SIZE, "%H:%M:%S", pLocalTime);
 		return m_localTime;
 	}
 
