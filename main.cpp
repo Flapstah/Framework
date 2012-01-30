@@ -20,19 +20,24 @@ void DumpArgs(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+	printf("main\n");
 	IGNORE_PARAMETER(argc);
 	IGNORE_PARAMETER(argv);
 
+	printf("clear screen\n");
 	uint32 screen[WINDOW_WIDTH*WINDOW_HEIGHT];
 	for (uint32 i = 0; i < WINDOW_WIDTH*WINDOW_HEIGHT; ++i)
 	{
 		screen[i] = 0x00ff0000;
 	}
 
+	printf("init keyboard\n");
 	CKeyboard::Initialise();
+	printf("init display\n");
 	CDisplay display(WINDOW_WIDTH, WINDOW_HEIGHT, "Framework test");
 
 	bool run = true;
+	printf("update display\n");
 	while (run)
 	{
 		run = display.Update(&screen);
