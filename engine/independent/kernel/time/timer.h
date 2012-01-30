@@ -38,7 +38,7 @@ namespace engine
 		virtual	void		SetScale(double scale)			{	m_scale = scale;													}
 		virtual	double	GetScale(void) const				{	return m_scale;														}
 
-		virtual	void		Pause(bool pause)						{ m_paused = true; m_frameTime = 0.0;				}
+		virtual	void		Pause(bool pause)						{ m_paused = pause; m_frameTime = 0.0;			}
 		virtual	bool		IsPaused(void)							{	return m_paused;													}
 
 		virtual	void		Reset(void)									{ m_currentTime = m_frameTime = 0.0;				}
@@ -49,7 +49,7 @@ namespace engine
 		double				m_scale;
 		double				m_maxFrameTime;
 		bool					m_paused;
-	}; // End [struct CTimer : public ITimeSource]
+	}; // End [class CTimer : public ITimeSource]
 
 	//============================================================================
 } // End [namespace engine]
