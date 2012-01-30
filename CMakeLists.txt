@@ -25,13 +25,21 @@ if (WIN32)
 	set(OPENAL_LIBRARY "D:/msysgit/msysgit/local/lib/OpenAL32.lib")
 	set(GLFW_INCLUDE_DIR "D:/msysgit/msysgit/local/include")
 	set(GLFW_LIBRARY "D:/msysgit/msysgit/local/lib/libglfw.a")
+
+	set(PLATFORM_INCLUDES "")
+	#	set(PLATFORM_INCLUDES "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include")
+
+	#C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC>path
+#PATH=C:\Program Files (x86)\Microsoft F#\v4.0\;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VSTSDB\Deploy;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\BIN;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\Tools;C:\Windows\Microsoft.NET\Framework\v4.0.30319;C:\Windows\Microsoft.NET\Framework\v3.5;C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\VCPackages;C:\Program Files (x86)\HTML Help Workshop;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\NETFX 4.0 Tools;C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin;C:\Program Files (x86)\SN Systems\PS3\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wb
 endif (WIN32)
 if (UNIX)
 	find_package(GLFW REQUIRED)
 	find_package(OpenAL REQUIRED)
+
+	set(PLATFORM_INCLUDES "")
 endif (UNIX)
 
-include_directories(${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
+include_directories(${PLATFORM_INCLUDES} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
 set(LIBS ${LIBS} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${OPENGL_LIBRARY})
 
 # Platform differences
