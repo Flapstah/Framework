@@ -6,6 +6,9 @@
 #include "graphics/display.h"
 #include "input/keyboard.h"
 
+#define WINDOW_WIDTH (640)
+#define WINDOW_HEIGHT (400)
+
 void DumpArgs(int argc, char* argv[])
 {
 	printf("Passed arguments:\n");
@@ -20,14 +23,14 @@ int main(int argc, char* argv[])
 	IGNORE_PARAMETER(argc);
 	IGNORE_PARAMETER(argv);
 
-	uint32 screen[640*400];
-	for (uint32 i = 0; i < 640*480; ++i)
+	uint32 screen[WINDOW_WIDTH*WINDOW_HEIGHT];
+	for (uint32 i = 0; i < WINDOW_WIDTH*WINDOW_HEIGHT; ++i)
 	{
 		screen[i] = 0x00ff0000;
 	}
 
 	CKeyboard::Initialise();
-	CDisplay display(640, 400, "Framework test");
+	CDisplay display(WINDOW_WIDTH, WINDOW_HEIGHT, "Framework test");
 
 	bool run = true;
 	while (run)
