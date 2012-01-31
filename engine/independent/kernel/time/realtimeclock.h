@@ -40,8 +40,8 @@ namespace engine
 		virtual	float				GetRealTime(void) const					{ return static_cast<float>(Platform_GetTimePrecise());	}
 		virtual	double			GetRealTimePrecise(void) const	{	return Platform_GetTimePrecise();											}
 
-		virtual const char*	GetLocalDateString(void) const	{	return Platform_GetLocalDateString();									}
-		virtual const char*	GetLocalTimeString(void) const	{	return Platform_GetLocalTimeString();									}
+		virtual const char*	GetLocalDateString(void) const;
+		virtual const char*	GetLocalTimeString(void) const;
 		// ~IRealTimeClock
 
 	protected:
