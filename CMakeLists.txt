@@ -59,17 +59,18 @@ set(PLATFORM_INDEPENDENT_SOURCES
  	engine/independent/input/keyboard.cpp
 	engine/independent/graphics/display.cpp
 	engine/independent/kernel/time/realtimeclock.cpp
+	engine/independent/kernel/time/time.cpp
 	engine/independent/kernel/time/timer.cpp
 	engine/independent/kernel/time/timesource.cpp
 	)
 if (WIN32)
 set(PLATFORM_SPECIFIC_SOURCES
-	engine/windows/kernel/time/platform_systemclock.cpp
+	engine/windows/kernel/time/platform_realtimeclock.cpp
 	)
 endif (WIN32)
 if (UNIX)
 set(PLATFORM_SPECIFIC_SOURCES
-	engine/linux/kernel/time/platform_systemclock.cpp
+	engine/linux/kernel/time/platform_realtimeclock.cpp
 	)
 endif (UNIX)
 
