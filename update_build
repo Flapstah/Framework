@@ -1,0 +1,52 @@
+########################################
+# Windows bit
+function update_windows
+{
+if [ ! -d windows ]; then mkdir windows; fi
+cd windows
+
+if [ ! -d msys ]; then mkdir msys; fi
+cd msys
+
+echo Updating MSYS build environment...
+cmake -G "MSYS Makefiles" ../../..
+cd ..
+
+if [ ! -d vs ]; then mkdir vs; fi
+cd vs
+
+echo Updating Visual Studio build environment...
+cmake ../../..
+cd ..
+
+return
+}
+#
+########################################
+
+########################################
+# Linux bit
+function update_linux
+{
+if [ ! -d linux ]; then mkdir linux; fi
+cd linux
+
+echo Updating Linux build environment...
+cmake ../..
+
+return
+}
+#
+########################################
+
+if [ ! -d build ]; then mkdir build; fi
+cd build
+
+case $1 in
+windows) update_windows ;;
+linux) update_linux ;;
+*) echo "Invalid option [$1]"; exit ;;
+esac
+
+echo Build environment updated.
+
