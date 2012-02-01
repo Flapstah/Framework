@@ -1,7 +1,7 @@
 Current:
-port timer to engine
 tick the update loop at a given frequency
 
 Done:
 move display into engine
 move keyboard into engine
+port timer to engine
