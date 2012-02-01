@@ -1,7 +1,6 @@
 #include "common/stdafx.h"
 
 #include "kernel/time/timer.h"
-#include "kernel/time/realtimeclock.h"
 
 //==============================================================================
 
@@ -28,27 +27,6 @@ namespace engine
 		}
 
 		return ticked;
-	}
-
-	//============================================================================
-
-	//----------------------------------------------------------------------------
-	// The global instance of the game clock
-	//----------------------------------------------------------------------------
-	CTimer g_gameClock(g_realTimeClock, 1.0, 0.1);
-
-	//============================================================================
-
-	ITimer* GetGameClock(void)
-	{
-		return &g_gameClock;
-	}
-
-	//============================================================================
-
-	ITimer* CreateTimer(ITimeSource& source, double scale, double maxFrameTime)
-	{
-		return new CTimer(source, scale, maxFrameTime);
 	}
 
 	//============================================================================
