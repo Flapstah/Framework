@@ -1,0 +1,5 @@
+find engine -name '*.cpp' > temp
+find engine -name '*.h' >> temp
+sort temp | gvim -p
+rm temp
+
