@@ -6,6 +6,8 @@
 
 #include "keyboard.h"
 
+#define DEBUG_INPUT 0
+
 //=============================================================================
 
 bool CKeyboard::s_keyState[512];
@@ -32,14 +34,16 @@ void CKeyboard::Uninitialise(void)
 void CKeyboard::Update(int key, int action)
 {
 	s_keyState[key] = (action == GLFW_PRESS) ? true : false;
-//	if (key >= GLFW_KEY_SPECIAL)
-//	{
-//		fprintf(stderr, "key %d, %s\n", key, (action == GLFW_PRESS) ? "pressed" : "released");
-//	}
-//	else
-//	{
-//		fprintf(stderr, "key '%c', %s\n", key, (action == GLFW_PRESS) ? "pressed" : "released");
-//	}
+#if DEBUG_INPUT
+	if (key >= GLFW_KEY_SPECIAL)
+	{
+		fprintf(stderr, "key %d, %s\n", key, (action == GLFW_PRESS) ? "pressed" : "released");
+	}
+	else
+	{
+		fprintf(stderr, "key '%c', %s\n", key, (action == GLFW_PRESS) ? "pressed" : "released");
+	}
+#endif // DEBUG_INPUT
 }
 
 //=============================================================================

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <GL/glfw.h>
+
 #include "common/types.h"
 #include "common/macros.h"
 #include "graphics/display.h"
@@ -32,13 +34,14 @@ int main(int argc, char* argv[])
 		screen[i] = 0x00ff0000;
 	}
 
-	CKeyboard::Initialise();
 	CDisplay display(WINDOW_WIDTH, WINDOW_HEIGHT, "Framework test");
+	CKeyboard::Initialise();
 
 	bool run = true;
 	while (run)
 	{
 		run = display.Update(&screen);
+		run &= !CKeyboard::IsKeyPressed(GLFW_KEY_ESC);
 	}
 
 	printf("All done.\n");
