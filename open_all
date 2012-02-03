@@ -1,5 +1,21 @@
-find engine -name '*.cpp' > temp
-find engine -name '*.h' >> temp
-sort temp | gvim -p
-rm temp
+#!/bin/sh
+
+# Start gvim in server mode
+gvim --servername Framework main.cpp &
+
+# Collate all the files
+find engine -name '*.cpp' > temp_file_list
+find engine -name '*.h' >> temp_file_list
+
+# Sort them...
+sort temp_file_list > sorted_file_list
+
+# Open them in vim
+while read filename; do
+	gvim --servername Framework --remote-tab $filename &
+done < sorted_file_list
+
+# Tidy up
+rm temp_file_list
+rm sorted_file_list
 
