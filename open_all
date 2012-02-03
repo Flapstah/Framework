@@ -1,18 +1,35 @@
 #!/bin/sh
 
-# Start gvim in server mode
-gvim --servername Framework main.cpp &
+# Start gvim in server mode, if it doesn't already exist
+vim_server=false
+for server in `vim --serverlist`
+do
+	if [ $server == "FRAMEWORK" ];
+ 	then
+	 	vim_server=true;
+ 	fi
+done
+
+if [ $vim_server == false ]
+then
+ 	gvim --servername FRAMEWORK &
+fi
 
 # Collate all the files
-find engine -name '*.cpp' > temp_file_list
-find engine -name '*.h' >> temp_file_list
+if [ -f temp_file_list ]; then rm temp_file_list; fi
+for arg in "$@"
+do
+	find $arg -name '*.cpp' >> temp_file_list
+	find $arg -name '*.h' >> temp_file_list
+done
 
 # Sort them...
+if [ -f sorted_file_list ]; then rm sorted_file_list; fi
 sort temp_file_list > sorted_file_list
 
 # Open them in vim
 while read filename; do
-	gvim --servername Framework --remote-tab $filename &
+	gvim --servername FRAMEWORK --remote-tab $filename
 done < sorted_file_list
 
 # Tidy up
