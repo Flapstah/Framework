@@ -2,50 +2,52 @@
 
 ########################################
 # Windows bit
-function update_windows
+update_windows()
 {
-if [ ! -d windows ]; then mkdir windows; fi
-cd windows
+	if [ ! -d windows ]; then mkdir windows; fi
+	cd windows
 
-if [ ! -d msys ]; then mkdir msys; fi
-cd msys
+	if [ ! -d msys ]; then mkdir msys; fi
+	cd msys
 
-echo Updating MSYS build environment...
-cmake -G "MSYS Makefiles" ../../..
-cd ..
+	echo Updating MSYS build environment...
+	cmake -G "MSYS Makefiles" ../../..
+	cd ..
 
-if [ ! -d vs ]; then mkdir vs; fi
-cd vs
+	if [ ! -d vs ]; then mkdir vs; fi
+	cd vs
 
-echo Updating Visual Studio build environment...
-cmake ../../..
-cd ..
+	echo Updating Visual Studio build environment...
+	cmake ../../..
+	cd ..
 
-return
+	return
 }
 #
 ########################################
 
 ########################################
 # Linux bit
-function update_linux
+update_linux()
 {
-if [ ! -d linux ]; then mkdir linux; fi
-cd linux
+	if [ ! -d linux ]; then mkdir linux; fi
+	cd linux
 
-echo Updating Linux build environment...
-cmake ../..
+	echo Updating Linux build environment...
+	cmake ../..
 
-return
+	return
 }
 #
 ########################################
+
+echo start
 
 if [ ! -d build ]; then mkdir build; fi
 cd build
 
 case $1 in
-[wW]) update_windows ;;
+	[wW]) update_windows ;;
 [wW][iI][nN]) update_windows ;;
 [wW][iI][nN][dD][oO][wW][sS]) update_windows ;;
 [lL]) update_linux ;;
