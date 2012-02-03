@@ -1,36 +1,56 @@
 #!/bin/sh
 
-# Start gvim in server mode, if it doesn't already exist
+# Variables
 vim_server=false
-for server in `vim --serverlist`
-do
-	if [ $server == "FRAMEWORK" ];
- 	then
-	 	vim_server=true;
- 	fi
-done
 
-if [ $vim_server == false ]
-then
+# Function to check for the vim server
+check_for_vim_server()
+{
+	for server in `vim --serverlist`
+	do
+		if [ $server = "FRAMEWORK" ]; then
+			vim_server=true
+			return
+		fi
+	done
+}
+
+# Start gvim in server mode, if it doesn't already exist
+echo Checking for FRAMEWORK server...
+check_for_vim_server
+
+if [ $vim_server = false ]; then
+	echo Starting FRAMEWORK server...
  	gvim --servername FRAMEWORK &
 fi
 
+while [ $vim_server = false ]; do
+	echo ...waiting for FRAMEWORK server to start...
+	sleep 1
+	check_for_vim_server
+done
+
+echo ...FRAMEWORK server started.
+
 # Collate all the files
 if [ -f temp_file_list ]; then rm temp_file_list; fi
-for arg in "$@"
-do
-	find $arg -name '*.cpp' >> temp_file_list
-	find $arg -name '*.h' >> temp_file_list
-done
+if [ $# -gt 0 ]; then
+	for arg in "$@"
+	do
+		find $arg -name '*.cpp' >> temp_file_list
+		find $arg -name '*.h' >> temp_file_list
+	done
+else
+		find -name '*.cpp' >> temp_file_list
+		find -name '*.h' >> temp_file_list
+fi
 
 # Sort them...
 if [ -f sorted_file_list ]; then rm sorted_file_list; fi
 sort temp_file_list > sorted_file_list
 
 # Open them in vim
-while read filename; do
-	gvim --servername FRAMEWORK --remote-tab $filename
-done < sorted_file_list
+gvim --servername FRAMEWORK --remote-tab `awk 'NR=1 { printf("%s ", $1) }' < sorted_file_list`
 
 # Tidy up
 rm temp_file_list
