@@ -12,8 +12,10 @@ namespace engine
 	{
 		bool ticked = false;
 
-		if ((!m_paused) && (m_frameCount < m_timeSource.GetFrameCount()))
+		if ((!m_paused) && (m_timeSourceFrameCount < m_timeSource.GetFrameCount()))
 		{
+			PARENT::Tick();
+
 			m_frameTime = (m_timeSource.GetTickTimePrecise() * m_scale) - m_currentTime;
 			m_currentTime += m_frameTime;
 
@@ -22,7 +24,7 @@ namespace engine
 				m_frameTime = m_maxFrameTime;
 			}
 
-			m_frameCount = m_timeSource.GetFrameCount();
+			m_timeSourceFrameCount = m_timeSource.GetFrameCount();
 			ticked = true;
 		}
 

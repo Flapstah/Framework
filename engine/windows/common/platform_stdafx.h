@@ -12,7 +12,7 @@
 #endif
 
 #define DEBUG_BREAK DebugBreak()
-#define SLEEP Sleep
+#define SLEEP(_milliseconds_) { ::Sleep(_milliseconds_); }
 
 //==============================================================================
 

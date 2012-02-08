@@ -26,7 +26,7 @@ namespace engine
 
 	public:
 										CTimer(ITimeSource& source, double scale, double maxFrameTime)
-											: m_timeSource(source), m_scale(scale), m_maxFrameTime(maxFrameTime)
+											: m_timeSource(source), m_scale(scale), m_maxFrameTime(maxFrameTime), m_timeSourceFrameCount(source.GetFrameCount())
 																								{	m_timeSource.AddReference();							}
 		virtual					~CTimer(void)								{ m_timeSource.Release();										}
 
@@ -48,6 +48,7 @@ namespace engine
 		ITimeSource&	m_timeSource;
 		double				m_scale;
 		double				m_maxFrameTime;
+		uint32				m_timeSourceFrameCount;
 		bool					m_paused;
 	}; // End [class CTimer : public ITimeSource]
 
