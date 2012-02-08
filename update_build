@@ -4,21 +4,18 @@
 # Windows bit
 update_windows()
 {
-	if [ ! -d windows ]; then mkdir windows; fi
-	cd windows
-
 	if [ ! -d msys ]; then mkdir msys; fi
 	cd msys
 
 	echo Updating MSYS build environment...
-	cmake -G "MSYS Makefiles" ../../..
+	cmake -G "MSYS Makefiles" ../..
 	cd ..
 
 	if [ ! -d vs ]; then mkdir vs; fi
 	cd vs
 
 	echo Updating Visual Studio build environment...
-	cmake ../../..
+	cmake ../..
 	cd ..
 
 	return
@@ -30,18 +27,13 @@ update_windows()
 # Linux bit
 update_linux()
 {
-	if [ ! -d linux ]; then mkdir linux; fi
-	cd linux
-
 	echo Updating Linux build environment...
-	cmake ../..
+	cmake ..
 
 	return
 }
 #
 ########################################
-
-echo start
 
 if [ ! -d build ]; then mkdir build; fi
 cd build
