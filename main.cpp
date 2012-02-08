@@ -1,3 +1,5 @@
+#include <common/stdafx.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,11 +7,16 @@
 
 #include "common/types.h"
 #include "common/macros.h"
+#include "common/ITime.h"
+
 #include "graphics/display.h"
 #include "input/keyboard.h"
 
 #define WINDOW_WIDTH (640)
 #define WINDOW_HEIGHT (400)
+
+#define DESIRED_FRAMERATE (10.0)
+#define FRAME_INTERVAL (1.0/DESIRED_FRAMERATE)
 
 void DumpArgs(int argc, char* argv[])
 {
@@ -37,11 +44,22 @@ int main(int argc, char* argv[])
 	CDisplay display(WINDOW_WIDTH, WINDOW_HEIGHT, "Framework test");
 	CKeyboard::Initialise();
 
+	engine::IRealTimeClock* pRTC = engine::GetRealTimeClock();
+	engine::ITimer* pGC = engine::GetGameClock();
+
 	bool run = true;
 	while (run)
 	{
+		pGC->Tick();
+		double time = pRTC->GetRealTimePrecise();
+
 		run = display.Update(&screen);
 		run &= !CKeyboard::IsKeyPressed(GLFW_KEY_ESC);
+
+		double timeTaken = pRTC->GetRealTimePrecise() - time;
+		double timeToWait = FRAME_INTERVAL - timeTaken;
+
+		SLEEP(timeToWait * 1000.0);
 	}
 
 	printf("All done.\n");
