@@ -1,9 +1,10 @@
 Current:
-rework framecount to be linear in CTimer but ensure it can't be ticked multiple
-times for one m_timeSource tick
-tick the update loop at a given frequency
+move keyboard and display into engine namespace
+make engine a separately compiled library
 
 Done:
 move display into engine
 move keyboard into engine
 port timer to engine
+rework framecount to be linear in CTimer but ensure it can't be ticked multiple times for one m_timeSource tick
+tick the update loop at a given frequency
