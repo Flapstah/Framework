@@ -6,79 +6,89 @@
 
 #include "keyboard.h"
 
+//==============================================================================
+
 #define DEBUG_INPUT 0
 
-//=============================================================================
+//==============================================================================
 
-bool CKeyboard::s_keyState[512];
-bool CKeyboard::s_keyPrevState[512];
-
-//=============================================================================
-
-void CKeyboard::Initialise(void)
+namespace engine
 {
-	memset(s_keyState, 0, sizeof(s_keyState) * sizeof(bool));
-	memset(s_keyPrevState, 0, sizeof(s_keyPrevState) * sizeof(bool));
+	//============================================================================
 
-	glfwSetKeyCallback(Update);
-}
+	bool CKeyboard::s_keyState[512];
+	bool CKeyboard::s_keyPrevState[512];
 
-//=============================================================================
+	//============================================================================
 
-void CKeyboard::Uninitialise(void)
-{
-}
+	void CKeyboard::Initialise(void)
+	{
+		memset(s_keyState, 0, sizeof(s_keyState) * sizeof(bool));
+		memset(s_keyPrevState, 0, sizeof(s_keyPrevState) * sizeof(bool));
 
-//=============================================================================
+		glfwSetKeyCallback(Update);
+	}
 
-void CKeyboard::Update(int key, int action)
-{
-	s_keyState[key] = (action == GLFW_PRESS) ? true : false;
+	//============================================================================
+
+	void CKeyboard::Uninitialise(void)
+	{
+	}
+
+	//============================================================================
+
+	void CKeyboard::Update(int key, int action)
+	{
+		s_keyState[key] = (action == GLFW_PRESS) ? true : false;
 #if DEBUG_INPUT
-	if (key >= GLFW_KEY_SPECIAL)
-	{
-		fprintf(stderr, "key %d, %s\n", key, (action == GLFW_PRESS) ? "pressed" : "released");
-	}
-	else
-	{
-		fprintf(stderr, "key '%c', %s\n", key, (action == GLFW_PRESS) ? "pressed" : "released");
-	}
+		if (key >= GLFW_KEY_SPECIAL)
+		{
+			fprintf(stderr, "key %d, %s\n", key, (action == GLFW_PRESS) ? "pressed" : "released");
+		}
+		else
+		{
+			fprintf(stderr, "key '%c', %s\n", key, (action == GLFW_PRESS) ? "pressed" : "released");
+		}
 #endif // DEBUG_INPUT
-}
+	}
 
-//=============================================================================
+	//============================================================================
 
-bool CKeyboard::IsKeyPressed(int key)
-{
-	bool pressed = (s_keyState[key] && !s_keyPrevState[key]);
-	s_keyPrevState[key] = s_keyState[key];
-	return pressed;
-}
+	bool CKeyboard::IsKeyPressed(int key)
+	{
+		bool pressed = (s_keyState[key] && !s_keyPrevState[key]);
+		s_keyPrevState[key] = s_keyState[key];
+		return pressed;
+	}
 
-//=============================================================================
+	//============================================================================
 
-bool CKeyboard::IsKeyHeld(int key)
-{
-	bool held = (s_keyState[key] && s_keyPrevState[key]);
-	s_keyPrevState[key] = s_keyState[key];
-	return held;
-}
+	bool CKeyboard::IsKeyHeld(int key)
+	{
+		bool held = (s_keyState[key] && s_keyPrevState[key]);
+		s_keyPrevState[key] = s_keyState[key];
+		return held;
+	}
 
-//=============================================================================
+	//============================================================================
 
-bool CKeyboard::IsKeyDown(int key)
-{
-	bool down = s_keyState[key];
-	s_keyPrevState[key] = s_keyState[key];
-	return down;
-}
+	bool CKeyboard::IsKeyDown(int key)
+	{
+		bool down = s_keyState[key];
+		s_keyPrevState[key] = s_keyState[key];
+		return down;
+	}
 
-//=============================================================================
+	//============================================================================
 
-void CKeyboard::ClearKey(int key)
-{
-	s_keyPrevState[key] = s_keyState[key] = false;
-}
+	void CKeyboard::ClearKey(int key)
+	{
+		s_keyPrevState[key] = s_keyState[key] = false;
+	}
 
-//=============================================================================
+	//============================================================================
+} // End [namespace engine]
+
+//==============================================================================
+// [EOF]
 

@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
 		screen[i] = 0x00ff0000;
 	}
 
-	CDisplay display(WINDOW_WIDTH, WINDOW_HEIGHT, "Framework test");
-	CKeyboard::Initialise();
+	engine::CDisplay display(WINDOW_WIDTH, WINDOW_HEIGHT, "Framework test");
+	engine::CKeyboard::Initialise();
 
 	engine::IRealTimeClock* pRTC = engine::GetRealTimeClock();
 	engine::ITimer* pGC = engine::GetGameClock();
@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 		double time = pRTC->GetRealTimePrecise();
 
 		run = display.Update(&screen);
-		run &= !CKeyboard::IsKeyPressed(GLFW_KEY_ESC);
+		run &= !engine::CKeyboard::IsKeyPressed(GLFW_KEY_ESC);
 
 		double timeTaken = pRTC->GetRealTimePrecise() - time;
 		double timeToWait = FRAME_INTERVAL - timeTaken;
@@ -64,6 +64,6 @@ int main(int argc, char* argv[])
 
 	printf("All done.\n");
 
-	CKeyboard::Uninitialise();
+	engine::CKeyboard::Uninitialise();
 	return argc;
 }
