@@ -52,18 +52,19 @@ int main(int argc, char* argv[])
 	{
 		pGC->Tick();
 		double time = pRTC->GetRealTimePrecise();
-
+		time = pRTC->GetRealTimePrecise();
+	
 		run = display.Update(&screen);
 		run &= !engine::CKeyboard::IsKeyPressed(GLFW_KEY_ESC);
-
+	
 		double timeTaken = pRTC->GetRealTimePrecise() - time;
 		double timeToWait = FRAME_INTERVAL - timeTaken;
-
+	
 		SLEEP(timeToWait * 1000.0);
 	}
 
 	printf("All done.\n");
 
 	engine::CKeyboard::Uninitialise();
-	return argc;
+	return 0;
 }

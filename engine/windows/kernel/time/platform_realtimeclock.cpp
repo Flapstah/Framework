@@ -13,7 +13,7 @@ namespace engine
 		LARGE_INTEGER frequency;
 
 		::QueryPerformanceFrequency(&frequency);
-		m_secondsPerTick = 1.0 / frequency.QuadPart;
+		m_ticksPerSecond = frequency.QuadPart;
 
 		Tick();
 		m_frameTime = 0.0;
@@ -33,7 +33,7 @@ namespace engine
 		LARGE_INTEGER time;
 
 		::QueryPerformanceCounter(&time);
-		double currentTime = time.QuadPart * m_secondsPerTick;
+		double currentTime = time.QuadPart / m_ticksPerSecond;
 
 		return currentTime;
 	}

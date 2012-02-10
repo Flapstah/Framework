@@ -52,7 +52,7 @@ namespace engine
 						const char*	Platform_GetLocalTimeString(void) const;
 
 	protected:
-						double	m_secondsPerTick;
+						double	m_ticksPerSecond;
 		mutable char		m_localDate[REAL_TIME_CLOCK_DATE_BUFFER_SIZE];
 		mutable char		m_localTime[REAL_TIME_CLOCK_TIME_BUFFER_SIZE];
 	}; // End [class CRealTimeClock : public IRealTimeClock]

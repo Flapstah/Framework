@@ -17,7 +17,7 @@ namespace engine
 
 	void CRealTimeClock::Platform_Initialise(void)
 	{
-		m_secondsPerTick = usec_per_sec;
+		m_ticksPerSecond = usec_per_sec;
 
 		Tick();
 		m_frameTime = 0.0;
@@ -37,7 +37,7 @@ namespace engine
 		::timeval time;
 
 		::gettimeofday(&time, NULL);
-		double currentTime = time.tv_usec + (time.tv_sec * m_secondsPerTick);
+		double currentTime = (time.tv_usec / m_ticksPerSecond) + time.tv_sec;
 
 		return currentTime;
 	}

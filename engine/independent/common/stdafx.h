@@ -9,6 +9,10 @@
 #include "targetver.h"
 #endif // defined(_WIN32) || defined(_WIN64)
 
+#if defined(__linux__)
+#include <unistd.h>
+#endif // defined(__linux__)
+
 #include <stdio.h>
 
 // TODO: reference additional headers your program requires here
