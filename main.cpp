@@ -7,7 +7,7 @@
 
 #include "common/types.h"
 #include "common/macros.h"
-#include "common/ITime.h"
+#include "common/itime.h"
 
 #include "graphics/display.h"
 #include "input/keyboard.h"
