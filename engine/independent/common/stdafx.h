@@ -5,21 +5,13 @@
 
 #pragma once
 
-#if defined(_WIN32) || defined(_WIN64)
-#include "targetver.h"
-#endif // defined(_WIN32) || defined(_WIN64)
-
-#if defined(__linux__)
-#include <unistd.h>
-#endif // defined(__linux__)
+#include "common/platform_stdafx.h"
 
 #include <stdio.h>
 
 // TODO: reference additional headers your program requires here
 //#include <assert.h>
 #include <time.h>
-
-#include "common/platform_stdafx.h"
 
 #include "common/types.h"
 #include "common/assert.h"
