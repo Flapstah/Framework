@@ -1,12 +1,10 @@
-#include <common/stdafx.h>
+#include "common/stdafx.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <GL/glfw.h>
 
-#include "common/types.h"
-#include "common/macros.h"
 #include "common/itime.h"
 
 #include "graphics/display.h"
