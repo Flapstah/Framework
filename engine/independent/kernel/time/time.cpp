@@ -21,6 +21,13 @@ namespace engine
 
 	//============================================================================
 
+	ITime* GetTime(void)
+	{
+		return &g_Time;
+	}
+
+	//============================================================================
+
 	void CTime::Initialise(void)
 	{
 		// Use placement new to construct the real-time and game clocks
@@ -54,34 +61,11 @@ namespace engine
 		}
 	}
 
-	//============================================================================
 
-	IRealTimeClock* GetRealTimeClock(void)
-	{
-		return g_Time.GetRealTimeClock();
-	}
-
-	//============================================================================
-
-	ITimer* GetGameClock(void)
-	{
-		return g_Time.GetGameClock();
-	}
-
-	//============================================================================
-
-	ITimer* CreateTimer(ITimeSource& source, double scale, double maxFrameTime)
-	{
-		return g_Time.CreateTimer(source, scale, maxFrameTime);
-	}
-
-	//============================================================================
-
-	void Sleep(uint32 milliseconds)
-	{
-		return g_Time.Sleep(milliseconds);
-	}
-
+		IRealTimeClock* CTime::GetRealTimeClock(void) const	{ return s_pRealTimeClock;	}
+		ITimer* CTime::GetGameClock(void) const			{ return s_pGameClock;			}
+		ITimer* CTime::CreateTimer(ITimeSource& source, double scale, double maxFrameTime) { return new CTimer(source, scale, maxFrameTime);	}
+		void CTime::Sleep(uint32 milliseconds)		{ Platform_Sleep(milliseconds); }
 	//============================================================================
 } // End [namespace engine]
 

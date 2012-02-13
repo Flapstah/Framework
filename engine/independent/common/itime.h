@@ -54,28 +54,39 @@ namespace engine
 		virtual void		Reset(void) = 0;
 	}; // End [struct ITimer : public ITimeSource]
 
-	//----------------------------------------------------------------------------
-	// Returns the real time clock
-	//----------------------------------------------------------------------------
-	IRealTimeClock* GetRealTimeClock(void);
+	//============================================================================
+	// ITime
+	//============================================================================
+	struct ITime
+	{
+		//--------------------------------------------------------------------------
+		// Returns the real time clock
+		//--------------------------------------------------------------------------
+		virtual IRealTimeClock* GetRealTimeClock(void) = 0;
+
+		//--------------------------------------------------------------------------
+		// Returns the game clock
+		//
+		// Use the game clock as the root of all timers (rather than the system clock)
+		// as it's current time count will be elapsed *game* time, not *real* time.
+		//--------------------------------------------------------------------------
+		virtual ITimer* GetGameClock(void) = 0;
+
+		//--------------------------------------------------------------------------
+		// Creates a general purpose timer
+		//--------------------------------------------------------------------------
+		virtual ITimer* CreateTimer(ITimeSource& source, double scale, double maxFrameTime) = 0;
+
+		//--------------------------------------------------------------------------
+		// Operating system sleep
+		//--------------------------------------------------------------------------
+		virtual void Sleep(uint32 milliseconds) = 0;
+	}; // End [struct ITime]
 
 	//----------------------------------------------------------------------------
-	// Returns the game clock
-	//
-	// Use the game clock as the root of all timers (rather than the system clock)
-	// as it's current time count will be elapsed *game* time, not *real* time.
+	// Returns the main time interface
 	//----------------------------------------------------------------------------
-	ITimer* GetGameClock(void);
-
-	//----------------------------------------------------------------------------
-	// Creates a general purpose timer
-	//----------------------------------------------------------------------------
-	ITimer* CreateTimer(ITimeSource& source, double scale, double maxFrameTime);
-
-	//----------------------------------------------------------------------------
-	// Operating system sleep
-	//----------------------------------------------------------------------------
-	void Sleep(uint32 milliseconds);
+	ITime* GetTime(void);
 
 	//============================================================================
 } // End [namespace engine]

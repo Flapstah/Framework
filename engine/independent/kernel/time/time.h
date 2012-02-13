@@ -13,20 +13,23 @@ namespace engine
 	//============================================================================
 	// CTime
 	//============================================================================
-	class CTime
+	class CTime : public ITime
 	{
 	public:
 										CTime(void)										{ Initialise();							}
 										~CTime(void)									{ Uninitialise();						}
 
-		IRealTimeClock*	GetRealTimeClock(void) const	{ return s_pRealTimeClock;	}
-		ITimer*					GetGameClock(void) const			{ return s_pGameClock;			}
-		ITimer*					CreateTimer(ITimeSource& source, double scale, double maxFrameTime) { return new CTimer(source, scale, maxFrameTime);	}
-		void						Sleep(uint32 milliseconds);
+		// ITime
+		virtual IRealTimeClock*	GetRealTimeClock(void) const;
+		virtual ITimer*					GetGameClock(void) const;
+		virtual ITimer*					CreateTimer(ITimeSource& source, double scale, double maxFrameTime);
+		virtual void						Sleep(uint32 milliseconds)		{ Platform_Sleep(milliseconds); }
+		// ~ITime
 
 	protected:
 		void						Initialise(void);
 		void						Uninitialise(void);
+		void						Platform_Sleep(uint32 milliseconds);
 
 	protected:
 		static	CRealTimeClock*	s_pRealTimeClock;

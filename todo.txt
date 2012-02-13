@@ -1,4 +1,6 @@
 Current:
+make time class construct/destruct in global scope; move timers to concrete
+	classes within it instead of pointers
 make glfw wrapper to init/deinit stuff in the right order
 make engine a separately compiled library
 

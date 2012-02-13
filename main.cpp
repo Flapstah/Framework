@@ -42,8 +42,10 @@ int main(int argc, char* argv[])
 	engine::CDisplay display(WINDOW_WIDTH, WINDOW_HEIGHT, "Framework test");
 	engine::CKeyboard::Initialise();
 
-	engine::IRealTimeClock* pRTC = engine::GetRealTimeClock();
-	engine::ITimer* pGC = engine::GetGameClock();
+	engine::ITime* pTime = engine::GetTime();
+
+	engine::IRealTimeClock* pRTC = pTime->GetRealTimeClock();
+	engine::ITimer* pGC = pTime->GetGameClock();
 
 	bool run = true;
 	while (run)
@@ -58,7 +60,7 @@ int main(int argc, char* argv[])
 		double timeTaken = pRTC->GetRealTimePrecise() - time;
 		double timeToWait = FRAME_INTERVAL - timeTaken;
 	
-		engine::Sleep(timeToWait * 1000.0);
+		pTime->Sleep(timeToWait * 1000.0);
 	}
 
 	printf("All done.\n");
