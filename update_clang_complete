@@ -1,0 +1,39 @@
+#!/bin/sh
+
+########################################
+# Windows bit
+update_windows()
+{
+	echo -Iengine/windows >> .clang_complete
+	return
+}
+#
+########################################
+
+########################################
+# Linux bit
+update_linux()
+{
+	echo -Iengine/linux >> .clang_complete
+	return
+}
+#
+########################################
+
+echo -Iengine/independent > .clang_complete
+
+case $1 in
+	[wW]) update_windows ;;
+[wW][iI][nN]) update_windows ;;
+[wW][iI][nN][dD][oO][wW][sS]) update_windows ;;
+[lL]) update_linux ;;
+[lL][iI][nN]) update_linux ;;
+[lL][iI][nN][uU][xX]) update_linux ;;
+*) echo "Invalid option [$1]"; exit ;;
+esac
+
+echo "*** .clang_complete"
+cat .clang_complete
+echo "***  end .clang_complete"
+echo .clang_complete updated.
+
