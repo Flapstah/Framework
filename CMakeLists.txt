@@ -71,11 +71,13 @@ set(PLATFORM_INDEPENDENT_SOURCES
 if (WIN32)
 set(PLATFORM_SPECIFIC_SOURCES
 	engine/windows/kernel/time/platform_realtimeclock.cpp
+	engine/windows/kernel/time/platform_time.cpp
 	)
 endif (WIN32)
 if (UNIX)
 set(PLATFORM_SPECIFIC_SOURCES
 	engine/linux/kernel/time/platform_realtimeclock.cpp
+	engine/linux/kernel/time/platform_time.cpp
 	)
 endif (UNIX)
 

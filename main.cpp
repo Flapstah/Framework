@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 		double timeTaken = pRTC->GetRealTimePrecise() - time;
 		double timeToWait = FRAME_INTERVAL - timeTaken;
 	
-		SLEEP(timeToWait * 1000.0);
+		engine::Sleep(timeToWait * 1000.0);
 	}
 
 	printf("All done.\n");

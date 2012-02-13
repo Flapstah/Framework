@@ -22,6 +22,7 @@ namespace engine
 		IRealTimeClock*	GetRealTimeClock(void) const	{ return s_pRealTimeClock;	}
 		ITimer*					GetGameClock(void) const			{ return s_pGameClock;			}
 		ITimer*					CreateTimer(ITimeSource& source, double scale, double maxFrameTime) { return new CTimer(source, scale, maxFrameTime);	}
+		void						Sleep(uint32 milliseconds);
 
 	protected:
 		void						Initialise(void);
