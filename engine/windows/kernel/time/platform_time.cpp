@@ -10,7 +10,13 @@ namespace engine
 
 	void CTime::Sleep(uint32 microseconds) const
 	{
-		::Sleep(microseconds * 1000);
+		uint32 milliseconds = microseconds/1000;
+		if ((milliseconds == 0) && (microseconds > 0))
+		{
+			milliseconds = 0;
+		}
+
+		::Sleep(milliseconds);
 	}
 
 	//============================================================================

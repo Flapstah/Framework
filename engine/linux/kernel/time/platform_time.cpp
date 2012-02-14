@@ -12,7 +12,7 @@ namespace engine
 
 	void CTime::Sleep(uint32 microseconds) const
 	{
-		::usleep(microseconds * 1000);
+		::usleep(microseconds);
 	}
 
 	//============================================================================
