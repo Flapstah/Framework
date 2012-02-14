@@ -1,36 +1,37 @@
-#!/bin/sh
+#!/bin/bash
 
 # Variables
-vim_server=false
+vim_server_exists=false
+vim_server_name=`echo ${PWD##*/} | tr '[:lower:]' '[:upper:]'`
 
 # Function to check for the vim server
-check_for_vim_server()
+check_vim_server_exists()
 {
 	for server in `vim --serverlist`
 	do
-		if [ $server = "FRAMEWORK" ]; then
-			vim_server=true
+		if [ $server = $vim_server_name ]; then
+			vim_server_exists=true
 			return
 		fi
 	done
 }
 
 # Start gvim in server mode, if it doesn't already exist
-echo Checking for FRAMEWORK server...
-check_for_vim_server
+echo Checking for $vim_server_name server...
+check_vim_server_exists
 
-if [ $vim_server = false ]; then
-	echo Starting FRAMEWORK server...
- 	gvim --servername FRAMEWORK &
+if [ $vim_server_exists = false ]; then
+	echo Starting $vim_server_name server...
+ 	gvim --servername $vim_server_name &
 fi
 
-while [ $vim_server = false ]; do
-	echo ...waiting for FRAMEWORK server to start...
+while [ $vim_server_exists = false ]; do
+	echo ...waiting for $vim_server_name server to start...
 	sleep 1
-	check_for_vim_server
+	check_vim_server_exists
 done
 
-echo ...FRAMEWORK server started.
+echo ...$vim_server_name server started.
 
 # Collate all the files
 if [ -f temp_file_list ]; then rm temp_file_list; fi
@@ -50,9 +51,9 @@ if [ -f sorted_file_list ]; then rm sorted_file_list; fi
 sort temp_file_list > sorted_file_list
 
 # Open them in vim
-#gvim --servername FRAMEWORK --remote-tab `awk 'NR=1 { printf("%s ", $1) }' < sorted_file_list`
+#gvim --servername $vim_server_name --remote-tab `awk 'NR=1 { printf("%s ", $1) }' < sorted_file_list`
 cat sorted_file_list | while read arg; do
-	gvim --servername FRAMEWORK --remote-tab $arg
+	gvim --servername $vim_server_name --remote-tab $arg
 done
 
 # Tidy up
