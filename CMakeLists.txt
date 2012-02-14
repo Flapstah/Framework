@@ -18,6 +18,15 @@ set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_BUILD_TYPE Debug)
 #set(CMAKE_BUILD_TYPE Release)
 
+# Platform includes
+set(PLATFORM_INCLUDES "${test_SOURCE_DIR}/engine/independent")
+if (WIN32)
+	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/windows")
+endif (WIN32)
+if (UNIX)
+	set(PLATFORM_INCLUDES ${PLATFORM_INCLUDES} "${test_SOURCE_DIR}/engine/linux")
+endif (UNIX)
+
 find_package(OpenGL REQUIRED)
 if (WIN32)
 	# Can't seem to use find_package for GLFW or OpenAL on my Windows 7 box...
@@ -31,7 +40,6 @@ if (WIN32)
 	set(GLFW_LIBRARY "D:/msysgit/msysgit/local/lib/glfw.lib")
 	endif (MSVC)
 
-	set(PLATFORM_INCLUDES "")
 	#	set(PLATFORM_INCLUDES "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include")
 
 	#C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC>path
@@ -41,24 +49,17 @@ if (UNIX)
 	find_package(GLFW REQUIRED)
 	find_package(OpenAL REQUIRED)
 
-	set(PLATFORM_INCLUDES "")
 endif (UNIX)
 
 include_directories(${PLATFORM_INCLUDES} ${GLFW_INCLUDE_DIR} ${OPENAL_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
 set(LIBS ${LIBS} ${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${OPENGL_LIBRARY})
 
-# Platform differences
-include_directories ("${test_SOURCE_DIR}/engine/independent")
-if (WIN32)
-	include_directories ("${test_SOURCE_DIR}/engine/windows")
-endif (WIN32)
-if (UNIX)
-	include_directories ("${test_SOURCE_DIR}/engine/linux")
-endif (UNIX)
-
 #get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 #DBG_MSG("INCLUDE_DIRECTORIES = [${dirs}]")
 #DBG_MSG("LIBS = [${LIBS}]")
+#DBG_MSG("PLATFORM_INCLUDES = [${PLATFORM_INCLUDES}]")
+
+# Platform sources
 set(PLATFORM_INDEPENDENT_SOURCES
  	engine/independent/common/stdafx.cpp
  	engine/independent/input/keyboard.cpp
