@@ -8,9 +8,9 @@ namespace engine
 {
 	//============================================================================
 
-	void CTime::Platform_Sleep(uint32 milliseconds)
+	void CTime::Sleep(uint32 microseconds) const
 	{
-		::Sleep(milliseconds);
+		::Sleep(microseconds * 1000);
 	}
 
 	//============================================================================

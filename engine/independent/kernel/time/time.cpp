@@ -10,62 +10,52 @@
 namespace engine
 {
 	//============================================================================
-	
-	static char g_realTimeClockMemory[sizeof(CRealTimeClock)];
-	static char g_gameClockMemory[sizeof(CTimer)];
 
-	CRealTimeClock* CTime::s_pRealTimeClock = NULL;
-	CTimer* CTime::s_pGameClock = NULL;
+	static char g_timeMemory[sizeof(CTime)];	// memory for global CTime
+	static CTime* g_pTime;										// global pointer to CTime
 
-	static CTime g_Time;
+	//============================================================================
+	// CTimeFactory
+	//============================================================================
+	class CTimeFactory
+	{
+		public:
+			CTimeFactory(void) { g_pTime = ::new(static_cast<void*>(g_timeMemory)) CTime(); }
+			~CTimeFactory(void) { g_pTime->~CTime(); }
+	};
+
+	//============================================================================
+
+	static CTimeFactory g_timeFactory;				// factory class to construct CTime
 
 	//============================================================================
 
 	ITime* GetTime(void)
 	{
-		return &g_Time;
+		return g_pTime;
 	}
 
 	//============================================================================
 
-	void CTime::Initialise(void)
+	IRealTimeClock* CTime::GetRealTimeClock(void)
 	{
-		// Use placement new to construct the real-time and game clocks
-		if (s_pRealTimeClock == NULL)
-		{
-			s_pRealTimeClock = ::new(static_cast<void*>(g_realTimeClockMemory)) CRealTimeClock();
-		}
-
-		if (s_pGameClock == NULL)
-		{
-			s_pGameClock = ::new(static_cast<void*>(g_gameClockMemory)) CTimer(*s_pRealTimeClock, 1.0, 0.1);
-		}
+		return &m_realTimeClock;
 	}
 
 	//============================================================================
 
-	void CTime::Uninitialise(void)
+	ITimer* CTime::GetGameClock(void)
 	{
-		// No need to call delete as these were allocated with placement new (but
-		// the destructors still need to be called, so are done explicitly here)
-		if (s_pGameClock != NULL)
-		{
-			s_pGameClock->~CTimer();
-			s_pGameClock = NULL;
-		}
-
-		if (s_pRealTimeClock != NULL)
-		{
-			s_pRealTimeClock->~CRealTimeClock();
-			s_pRealTimeClock = NULL;
-		}
+		return &m_gameClock;
 	}
 
+	//============================================================================
 
-		IRealTimeClock* CTime::GetRealTimeClock(void) const	{ return s_pRealTimeClock;	}
-		ITimer* CTime::GetGameClock(void) const			{ return s_pGameClock;			}
-		ITimer* CTime::CreateTimer(ITimeSource& source, double scale, double maxFrameTime) { return new CTimer(source, scale, maxFrameTime);	}
-		void CTime::Sleep(uint32 milliseconds)		{ Platform_Sleep(milliseconds); }
+	ITimer* CTime::CreateTimer(ITimeSource& source, double scale, double maxFrameTime)
+	{
+		return new CTimer(source, scale, maxFrameTime);
+	}
+
 	//============================================================================
 } // End [namespace engine]
 

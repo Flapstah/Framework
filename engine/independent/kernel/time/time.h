@@ -16,24 +16,19 @@ namespace engine
 	class CTime : public ITime
 	{
 	public:
-										CTime(void)										{ Initialise();							}
-										~CTime(void)									{ Uninitialise();						}
+										CTime(void) : m_gameClock(m_realTimeClock, 1.0, 0.1)	{}
+										~CTime(void)																					{}
 
 		// ITime
-		virtual IRealTimeClock*	GetRealTimeClock(void) const;
-		virtual ITimer*					GetGameClock(void) const;
+		virtual IRealTimeClock*	GetRealTimeClock(void);
+		virtual ITimer*					GetGameClock(void);
 		virtual ITimer*					CreateTimer(ITimeSource& source, double scale, double maxFrameTime);
-		virtual void						Sleep(uint32 milliseconds)		{ Platform_Sleep(milliseconds); }
+		virtual void						Sleep(uint32 microseconds) const;
 		// ~ITime
 
 	protected:
-		void						Initialise(void);
-		void						Uninitialise(void);
-		void						Platform_Sleep(uint32 milliseconds);
-
-	protected:
-		static	CRealTimeClock*	s_pRealTimeClock;
-		static	CTimer*					s_pGameClock;
+		CRealTimeClock	m_realTimeClock;
+		CTimer					m_gameClock;
 	}; // End [class CTime]
 
 	//============================================================================

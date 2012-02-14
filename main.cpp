@@ -59,6 +59,10 @@ int main(int argc, char* argv[])
 	
 		double timeTaken = pRTC->GetRealTimePrecise() - time;
 		double timeToWait = FRAME_INTERVAL - timeTaken;
+		if (timeToWait < 1.0f)
+		{
+			timeToWait = 1.0f;
+		}
 	
 		pTime->Sleep(timeToWait * 1000.0);
 	}

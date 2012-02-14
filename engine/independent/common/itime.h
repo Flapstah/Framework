@@ -80,7 +80,7 @@ namespace engine
 		//--------------------------------------------------------------------------
 		// Operating system sleep
 		//--------------------------------------------------------------------------
-		virtual void Sleep(uint32 milliseconds) = 0;
+		virtual void Sleep(uint32 microseconds) const = 0;
 	}; // End [struct ITime]
 
 	//----------------------------------------------------------------------------

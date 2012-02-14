@@ -10,9 +10,9 @@ namespace engine
 {
 	//============================================================================
 
-	void CTime::Sleep(uint32 milliseconds)
+	void CTime::Sleep(uint32 microseconds) const
 	{
-		::usleep(milliseconds * 1000);
+		::usleep(microseconds * 1000);
 	}
 
 	//============================================================================
