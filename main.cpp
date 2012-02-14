@@ -47,24 +47,30 @@ int main(int argc, char* argv[])
 	engine::IRealTimeClock* pRTC = pTime->GetRealTimeClock();
 	engine::ITimer* pGC = pTime->GetGameClock();
 
+	double lastTick = 0.0;
+	float frameCount = 0.0f;
 	bool run = true;
 	while (run)
 	{
 		pGC->Tick();
 		double time = pRTC->GetRealTimePrecise();
-		time = pRTC->GetRealTimePrecise();
+		double timePeriod = time-lastTick;
+		if (timePeriod >= 1.0)
+		{
+			printf("Framerate: %.02ffps\n", frameCount/timePeriod);
+			printf("GameClock: %f\n", pGC->GetFrameTimePrecise());
+			lastTick = time;
+			frameCount = 0.0f;
+		}
 	
 		run = display.Update(&screen);
 		run &= !engine::CKeyboard::IsKeyPressed(GLFW_KEY_ESC);
 	
-		double timeTaken = pRTC->GetRealTimePrecise() - time;
+		++frameCount;
+
+		double timeTaken = pRTC->GetRealTimePrecise()-time;
 		double timeToWait = FRAME_INTERVAL - timeTaken;
-		if (timeToWait < 1.0f)
-		{
-			timeToWait = 1.0f;
-		}
-	
-		pTime->Sleep(timeToWait * 1000.0);
+		pTime->Sleep(timeToWait * 1000000.0);
 	}
 
 	printf("All done.\n");
