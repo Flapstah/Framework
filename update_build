@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ########################################
 # Windows bit
@@ -16,7 +16,12 @@ update_windows()
 
 	echo Updating Visual Studio build environment...
 	cmake ../..
-	cd ..
+	cd ../..
+
+	# utility script to run make from project root
+	echo "#!/bin/bash" > make
+	echo "cd build/msys" >> make
+	echo "make" >> make
 
 	return
 }
@@ -29,6 +34,12 @@ update_linux()
 {
 	echo Updating Linux build environment...
 	cmake ..
+	cd ..
+
+	# utility script to run make from project root
+	echo "#!/bin/bash" > make
+	echo "cd build" >> make
+	echo "make" >> make
 
 	return
 }
@@ -39,7 +50,7 @@ if [ ! -d build ]; then mkdir build; fi
 cd build
 
 case $1 in
-	[wW]) update_windows ;;
+[wW]) update_windows ;;
 [wW][iI][nN]) update_windows ;;
 [wW][iI][nN][dD][oO][wW][sS]) update_windows ;;
 [lL]) update_linux ;;
