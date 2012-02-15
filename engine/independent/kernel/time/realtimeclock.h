@@ -29,26 +29,26 @@ namespace engine
 		typedef CTimeSource PARENT;
 
 	public:
-												CRealTimeClock(void)						{	Platform_Initialise();			}
-		virtual							~CRealTimeClock(void)						{	Platform_Uninitialise();		}
+												CRealTimeClock(void)						{	Initialise();			}
+		virtual							~CRealTimeClock(void)						{	Uninitialise();		}
 
 		// ITimeSource
 		virtual	double			Tick(void);
 		// ~ITimeSource
 
 		// IRealTimeClock
-		virtual	double			GetRealTime(void) const					{	return Platform_GetTime();	}
+		virtual	double			GetRealTime(void) const					{	return GetTime();	}
 
-		virtual const char*	GetLocalDateString(void) const;
-		virtual const char*	GetLocalTimeString(void) const;
+		virtual const char*	GetDateString(void) const;
+		virtual const char*	GetTimeString(void) const;
 		// ~IRealTimeClock
 
 	protected:
-						void				Platform_Initialise(void);
-						void				Platform_Uninitialise(void);
-						double			Platform_GetTime(void) const;
-						const char*	Platform_GetLocalDateString(void) const;
-						const char*	Platform_GetLocalTimeString(void) const;
+						void				Initialise(void);
+						void				Uninitialise(void);
+						double			GetTime(void) const;
+						const char*	GetLocalDateString(void) const;
+						const char*	GetLocalTimeString(void) const;
 
 	protected:
 						double	m_ticksPerSecond;

@@ -8,7 +8,7 @@ namespace engine
 {
 	//============================================================================
 
-	void CRealTimeClock::Platform_Initialise(void)
+	void CRealTimeClock::Initialise(void)
 	{
 		LARGE_INTEGER frequency;
 
@@ -21,14 +21,14 @@ namespace engine
 
 	//============================================================================
 
-	void CRealTimeClock::Platform_Uninitialise(void)
+	void CRealTimeClock::Uninitialise(void)
 	{
 		// Nothing to do
 	}
 
 	//============================================================================
 
-	double CRealTimeClock::Platform_GetTime(void) const
+	double CRealTimeClock::GetTime(void) const
 	{
 		LARGE_INTEGER time;
 

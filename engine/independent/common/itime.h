@@ -31,8 +31,8 @@ namespace engine
 	{
 		virtual	double	GetRealTime(void) const = 0;
 
-		virtual const char*	GetLocalDateString(void) const = 0;
-		virtual const char*	GetLocalTimeString(void) const = 0;
+		virtual const char*	GetDateString(void) const = 0;
+		virtual const char*	GetTimeString(void) const = 0;
 	}; // End [struct IRealTimeClock : public ITimeSource]
 
 	//============================================================================

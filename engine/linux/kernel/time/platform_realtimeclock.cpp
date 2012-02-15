@@ -15,7 +15,7 @@ namespace engine
 {
 	//============================================================================
 
-	void CRealTimeClock::Platform_Initialise(void)
+	void CRealTimeClock::Initialise(void)
 	{
 		m_ticksPerSecond = usec_per_sec;
 
@@ -25,14 +25,14 @@ namespace engine
 
 	//============================================================================
 
-	void CRealTimeClock::Platform_Uninitialise(void)
+	void CRealTimeClock::Uninitialise(void)
 	{
 		// Nothing to do
 	}
 
 	//============================================================================
 
-	double CRealTimeClock::Platform_GetTime(void) const
+	double CRealTimeClock::GetTime(void) const
 	{
 		::timeval time;
 

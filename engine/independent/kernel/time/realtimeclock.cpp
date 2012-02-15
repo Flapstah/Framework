@@ -12,7 +12,7 @@ namespace engine
 	{
 		PARENT::Tick();
 
-		double currentTime = Platform_GetTime();
+		double currentTime = GetTime();
 		m_frameTime = currentTime - m_currentTime;
 		m_currentTime = currentTime;
 
@@ -21,7 +21,7 @@ namespace engine
 
 	//============================================================================
 
-	const char* CRealTimeClock::GetLocalDateString(void) const
+	const char* CRealTimeClock::GetDateString(void) const
 	{
 		::time_t absoluteTime;
 		::time(&absoluteTime);
@@ -36,7 +36,7 @@ namespace engine
 
 	//============================================================================
 
-	const char* CRealTimeClock::GetLocalTimeString(void) const
+	const char* CRealTimeClock::GetTimeString(void) const
 	{
 		::time_t absoluteTime;
 		::time(&absoluteTime);
