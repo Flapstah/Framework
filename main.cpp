@@ -26,12 +26,30 @@ void DumpArgs(int argc, char* argv[])
 	printf("*** End argument list\n");
 }
 
+void DumpVariableSizes(void)
+{
+	printf("*** Variable sizes\n");
+#define PRINT_SIZE(_type_) printf(#_type_ "\t: %d\n", sizeof(_type_))
+	PRINT_SIZE(int8);
+	PRINT_SIZE(int16);
+	PRINT_SIZE(int32);
+	PRINT_SIZE(int64);
+	PRINT_SIZE(uint8);
+	PRINT_SIZE(uint16);
+	PRINT_SIZE(uint32);
+	PRINT_SIZE(uint64);
+	PRINT_SIZE(bool);
+	PRINT_SIZE(float);
+	PRINT_SIZE(double);
+#undef PRINT_SIZE
+	printf("*** End variable sizes\n");
+}
+
 int main(int argc, char* argv[])
 {
-	DumpArgs(argc, argv);
-
 //	IGNORE_PARAMETER(argc);
 //	IGNORE_PARAMETER(argv);
+	DumpArgs(argc, argv);
 
 	uint32 screen[WINDOW_WIDTH*WINDOW_HEIGHT];
 	for (uint32 i = 0; i < WINDOW_WIDTH*WINDOW_HEIGHT; ++i)
@@ -47,32 +65,38 @@ int main(int argc, char* argv[])
 	engine::IRealTimeClock* pRTC = pTime->GetRealTimeClock();
 	engine::ITimer* pGC = pTime->GetGameClock();
 
-	double lastTick = 0.0;
-	float frameCount = 0.0f;
+	double timeCount = 0.0;
+	double frameCount = 0.0;
+
 	bool run = true;
 	while (run)
 	{
-		pGC->Tick();
 		double time = pRTC->GetRealTimePrecise();
-		double timePeriod = time-lastTick;
-		if (timePeriod >= 1.0)
-		{
-			printf("Framerate: %.02ffps\n", frameCount/timePeriod);
-			printf("GameClock: %f\n", pGC->GetFrameTimePrecise());
-			lastTick = time;
-			frameCount = 0.0f;
-		}
-	
+		pRTC->Tick();
+		pGC->Tick();
+
 		run = display.Update(&screen);
 		run &= !engine::CKeyboard::IsKeyPressed(GLFW_KEY_ESC);
-	
+
+		if (timeCount >= 1.0)
+		{
+			printf("*** Framerate: frames %.02f time %.02f %.02ffps\n", frameCount, timeCount, frameCount/timeCount);
+			timeCount -= 1.0;
+			frameCount = 0.0;
+		}
+
+		double timeNow = pRTC->GetRealTimePrecise();
+		double timeTaken = timeNow - time;
+		timeCount += pGC->GetFrameTimePrecise();
 		++frameCount;
 
-		double timeTaken = pRTC->GetRealTimePrecise()-time;
-		double timeToWait = FRAME_INTERVAL - timeTaken;
+		printf("Clock: %f\n", timeTaken);
+		double timeToWait = (timeTaken >= FRAME_INTERVAL) ? 0.001 : (FRAME_INTERVAL - timeTaken);
 		pTime->Sleep(timeToWait * 1000000.0);
 	}
 
+	printf("********\n");
+	//DumpVariableSizes();
 	printf("All done.\n");
 
 	engine::CKeyboard::Uninitialise();
