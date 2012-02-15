@@ -14,14 +14,10 @@ namespace engine
 	//============================================================================
 	struct ITimeSource
 	{
-		virtual	bool		Tick(void) = 0;
+		virtual	double	Tick(void) = 0;
 
-		virtual	float		GetTickTime(void) const = 0;
-		virtual	double	GetTickTimePrecise(void) const = 0;
-
-		virtual	float		GetFrameTime(void) const = 0;
-		virtual	double	GetFrameTimePrecise(void) const = 0;
-
+		virtual	double	GetTickTime(void) const = 0;
+		virtual	double	GetFrameTime(void) const = 0;
 		virtual	uint32	GetFrameCount(void) const = 0;
 
 		virtual	void		AddReference(void) = 0;
@@ -33,8 +29,7 @@ namespace engine
 	//============================================================================
 	struct IRealTimeClock : virtual public ITimeSource 
 	{
-		virtual	float		GetRealTime(void) const = 0;
-		virtual	double	GetRealTimePrecise(void) const = 0;
+		virtual	double	GetRealTime(void) const = 0;
 
 		virtual const char*	GetLocalDateString(void) const = 0;
 		virtual const char*	GetLocalTimeString(void) const = 0;

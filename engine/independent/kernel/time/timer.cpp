@@ -8,15 +8,13 @@ namespace engine
 {
 	//============================================================================
 
-	bool CTimer::Tick(void)
+	double CTimer::Tick(void)
 	{
-		bool ticked = false;
-
 		if ((!m_paused) && (m_timeSourceFrameCount < m_timeSource.GetFrameCount()))
 		{
 			PARENT::Tick();
 
-			m_frameTime = (m_timeSource.GetTickTimePrecise() * m_scale) - m_currentTime;
+			m_frameTime = (m_timeSource.GetTickTime() * m_scale) - m_currentTime;
 			m_currentTime += m_frameTime;
 
 			if ((m_maxFrameTime > 0.0) && (m_frameTime > m_maxFrameTime))
@@ -25,10 +23,13 @@ namespace engine
 			}
 
 			m_timeSourceFrameCount = m_timeSource.GetFrameCount();
-			ticked = true;
+		}
+		else
+		{
+			printf("CTimer::Tick() called too many times per frame\n");
 		}
 
-		return ticked;
+		return m_frameTime;
 	}
 
 	//============================================================================

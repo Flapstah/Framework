@@ -32,7 +32,7 @@ namespace engine
 
 	//============================================================================
 
-	double CRealTimeClock::Platform_GetTimePrecise(void) const
+	double CRealTimeClock::Platform_GetTime(void) const
 	{
 		::timeval time;
 

@@ -8,15 +8,15 @@ namespace engine
 {
 	//============================================================================
 
-	bool CRealTimeClock::Tick(void)
+	double CRealTimeClock::Tick(void)
 	{
 		PARENT::Tick();
 
-		double currentTime = Platform_GetTimePrecise();
+		double currentTime = Platform_GetTime();
 		m_frameTime = currentTime - m_currentTime;
 		m_currentTime = currentTime;
 
-		return true;
+		return m_frameTime;
 	}
 
 	//============================================================================

@@ -31,7 +31,7 @@ namespace engine
 		virtual					~CTimer(void)								{ m_timeSource.Release();										}
 
 		// ITimeSource
-		virtual	bool		Tick(void);
+		virtual	double	Tick(void);
 		// ~ITimeSource
 
 		// ITimer

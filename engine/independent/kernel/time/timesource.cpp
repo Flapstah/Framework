@@ -8,10 +8,10 @@ namespace engine
 {
 	//============================================================================
 
-	bool CTimeSource::Tick(void)
+	double CTimeSource::Tick(void)
 	{
 	 	++m_frameCount;
-	 	return true;
+	 	return m_frameTime;
 	}
 
 	//============================================================================

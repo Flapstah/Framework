@@ -29,16 +29,15 @@ namespace engine
 		typedef CTimeSource PARENT;
 
 	public:
-												CRealTimeClock(void)						{	Platform_Initialise();																}
-		virtual							~CRealTimeClock(void)						{	Platform_Uninitialise();															}
+												CRealTimeClock(void)						{	Platform_Initialise();			}
+		virtual							~CRealTimeClock(void)						{	Platform_Uninitialise();		}
 
 		// ITimeSource
-		virtual	bool				Tick(void);
+		virtual	double			Tick(void);
 		// ~ITimeSource
 
 		// IRealTimeClock
-		virtual	float				GetRealTime(void) const					{ return static_cast<float>(Platform_GetTimePrecise());	}
-		virtual	double			GetRealTimePrecise(void) const	{	return Platform_GetTimePrecise();											}
+		virtual	double			GetRealTime(void) const					{	return Platform_GetTime();	}
 
 		virtual const char*	GetLocalDateString(void) const;
 		virtual const char*	GetLocalTimeString(void) const;
@@ -47,7 +46,7 @@ namespace engine
 	protected:
 						void				Platform_Initialise(void);
 						void				Platform_Uninitialise(void);
-						double			Platform_GetTimePrecise(void) const;
+						double			Platform_GetTime(void) const;
 						const char*	Platform_GetLocalDateString(void) const;
 						const char*	Platform_GetLocalTimeString(void) const;
 

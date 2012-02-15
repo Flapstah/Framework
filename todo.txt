@@ -4,6 +4,7 @@ make glfw wrapper to init/deinit stuff in the right order
 make engine a separately compiled library
 
 Done:
+remove float versions of time and have tick return the time elapsed
 make time class construct/destruct in global scope; move timers to concrete
 	classes within it instead of pointers
 move display into engine

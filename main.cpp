@@ -29,7 +29,7 @@ void DumpArgs(int argc, char* argv[])
 void DumpVariableSizes(void)
 {
 	printf("*** Variable sizes\n");
-#define PRINT_SIZE(_type_) printf(#_type_ "\t: %d\n", sizeof(_type_))
+#define PRINT_SIZE(_type_) printf(#_type_ "\t: %lu\n", sizeof(_type_))
 	PRINT_SIZE(int8);
 	PRINT_SIZE(int16);
 	PRINT_SIZE(int32);
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
 	bool run = true;
 	while (run)
 	{
-		double time = pRTC->GetRealTimePrecise();
+		double time = pRTC->GetRealTime();
 		pRTC->Tick();
 		pGC->Tick();
 
@@ -85,9 +85,9 @@ int main(int argc, char* argv[])
 			frameCount = 0.0;
 		}
 
-		double timeNow = pRTC->GetRealTimePrecise();
+		double timeNow = pRTC->GetRealTime();
 		double timeTaken = timeNow - time;
-		timeCount += pGC->GetFrameTimePrecise();
+		timeCount += pGC->GetFrameTime();
 		++frameCount;
 
 		printf("Clock: %f\n", timeTaken);
