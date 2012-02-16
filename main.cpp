@@ -29,7 +29,7 @@ void DumpArgs(int argc, char* argv[])
 void DumpVariableSizes(void)
 {
 	printf("*** Variable sizes\n");
-#define PRINT_SIZE(_type_) printf(#_type_ "\t: %lu\n", sizeof(_type_))
+#define PRINT_SIZE(_type_) printf(#_type_ "\t: %u\n", static_cast<uint32>(sizeof(_type_)))
 	PRINT_SIZE(int8);
 	PRINT_SIZE(int16);
 	PRINT_SIZE(int32);
@@ -65,17 +65,23 @@ int main(int argc, char* argv[])
 	engine::IRealTimeClock* pRTC = pTime->GetRealTimeClock();
 	engine::ITimer* pGC = pTime->GetGameClock();
 
+	double time = 0.0;
 	double timeCount = 0.0;
 	double frameCount = 0.0;
 
 	bool run = true;
 	while (run)
 	{
-		double time = pRTC->GetRealTime();
-		pRTC->Tick();
-		pGC->Tick();
+		timeCount += pRTC->Tick();
+		time += pGC->Tick();
 
-		run = display.Update(&screen);
+		if (time >= FRAME_INTERVAL)
+		{
+			time -= FRAME_INTERVAL;
+			++frameCount;
+			run = display.Update(&screen);
+		}
+
 		run &= !engine::CKeyboard::IsKeyPressed(GLFW_KEY_ESC);
 
 		if (timeCount >= 1.0)
@@ -84,19 +90,10 @@ int main(int argc, char* argv[])
 			timeCount -= 1.0;
 			frameCount = 0.0;
 		}
-
-		double timeNow = pRTC->GetRealTime();
-		double timeTaken = timeNow - time;
-		timeCount += pGC->GetFrameTime();
-		++frameCount;
-
-		printf("Clock: %f\n", timeTaken);
-		double timeToWait = (timeTaken >= FRAME_INTERVAL) ? 0.001 : (FRAME_INTERVAL - timeTaken);
-		pTime->Sleep(timeToWait * 1000000.0);
 	}
 
 	printf("********\n");
-	//DumpVariableSizes();
+//	DumpVariableSizes();
 	printf("All done.\n");
 
 	engine::CKeyboard::Uninitialise();
