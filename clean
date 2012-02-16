@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# Remove all .*.swp files that might be hanging around from crashed Vim
+# instances
+
+# Collate all the files
+echo Searching for ".*.swp" files...
+if [ -f temp_file_list ]; then rm temp_file_list; fi
+if [ $# -gt 0 ]; then
+	for arg in "$@"
+	do
+		find $arg -name '.*.swp' >> temp_file_list
+	done
+else
+		find -name '.*.swp' >> temp_file_list
+fi
+
+# remove the files
+cat temp_file_list | while read arg; do
+	echo ...removing $arg...
+	rm $arg
+done
+echo ...Done
+
+# Tidy up
+rm temp_file_list
