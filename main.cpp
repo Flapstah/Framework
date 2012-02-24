@@ -20,7 +20,12 @@
 // Path Rendering stuff goes here
 //==============================================================================
 
-#define SAMPLES (1)
+#define SAMPLES (50)
+//#if defined (WIN32)
+#define RAND (rand()/(double)RAND_MAX) 
+//#else
+//#define RAND erand48(Xi)
+//#endif // defined (WIN32)
 
 #include <math.h>   // smallpt, a Path Tracer by Kevin Beason, 2008
 //#include <stdlib.h> // Make : g++ -O3 -fopenmp smallpt.cpp -o smallpt
@@ -76,15 +81,9 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
   const Sphere &obj = spheres[id];        // the hit object
   Vec x=r.o+r.d*t, n=(x-obj.p).norm(), nl=n.dot(r.d)<0?n:n*-1, f=obj.c;
   double p = f.x>f.y && f.x>f.z ? f.x : f.y>f.z ? f.y : f.z; // max refl
-  if (++depth>5)
-	{
-		if ((rand()/(double)RAND_MAX)<p)
-		 	f=f*(1/p);
-	}
-	else
-	 	return obj.e; //R.R.
+  if (++depth>5) if (RAND<p) f=f*(1/p); else return obj.e; //R.R.
   if (obj.refl == DIFF){                  // Ideal DIFFUSE reflection
-    double r1=2*M_PI*(rand()/(double)RAND_MAX), r2=(rand()/(double)RAND_MAX), r2s=sqrt(r2);
+    double r1=2*M_PI*RAND, r2=RAND, r2s=sqrt(r2);
     Vec w=nl, u=((fabs(w.x)>.1?Vec(0,1):Vec(1))%w).norm(), v=w%u;
     Vec d = (u*cos(r1)*r2s + v*sin(r1)*r2s + w*sqrt(1-r2)).norm();
     return obj.e + f.mult(radiance(Ray(x,d),depth,Xi));
@@ -98,105 +97,50 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
   Vec tdir = (r.d*nnt - n*((into?1:-1)*(ddn*nnt+sqrt(cos2t)))).norm();
   double a=nt-nc, b=nt+nc, R0=a*a/(b*b), c = 1-(into?-ddn:tdir.dot(n));
   double Re=R0+(1-R0)*c*c*c*c*c,Tr=1-Re,P=.25+.5*Re,RP=Re/P,TP=Tr/(1-P);
-  return obj.e + f.mult(depth>2 ? ((rand()/(double)RAND_MAX)<P ?   // Russian roulette
+  return obj.e + f.mult(depth>2 ? (RAND<P ?   // Russian roulette
     radiance(reflRay,depth,Xi)*RP:radiance(Ray(x,tdir),depth,Xi)*TP) :
     radiance(reflRay,depth,Xi)*Re+radiance(Ray(x,tdir),depth,Xi)*Tr);
 }
-//int main(int argc, char *argv[]){
-//  int w=1024, h=768, samps = argc==2 ? atoi(argv[1])/4 : 1; // # samples
-//  Ray cam(Vec(50,52,295.6), Vec(0,-0.042612,-1).norm()); // cam pos, dir
-//  Vec cx=Vec(w*.5135/h), cy=(cx%cam.d).norm()*.5135, r, *c=new Vec[w*h];
-//#pragma omp parallel for schedule(dynamic, 1) private(r)       // OpenMP
-//  for (int y=0; y<h; y++){                       // Loop over image rows
-//    fprintf(stderr,"\rRendering (%d spp) %5.2f%%",samps*4,100.*y/(h-1));
-//    for (unsigned short x=0, Xi[3]={0,0,y*y*y}; x<w; x++)   // Loop cols
-//      for (int sy=0, i=(h-y-1)*w+x; sy<2; sy++)     // 2x2 subpixel rows
-//        for (int sx=0; sx<2; sx++, r=Vec()){        // 2x2 subpixel cols
-//          for (int s=0; s<samps; s++){
-//            double r1=2*(rand()/(double)RAND_MAX), dx=r1<1 ? sqrt(r1)-1: 1-sqrt(2-r1);
-//            double r2=2*(rand()/(double)RAND_MAX), dy=r2<1 ? sqrt(r2)-1: 1-sqrt(2-r2);
-//            Vec d = cx*( ( (sx+.5 + dx)/2 + x)/w - .5) +
-//                    cy*( ( (sy+.5 + dy)/2 + y)/h - .5) + cam.d;
-//            r = r + radiance(Ray(cam.o+d*140,d.norm()),0,Xi)*(1./samps);
-//          } // Camera rays are pushed ^^^^^ forward to start in interior
-//          c[i] = c[i] + Vec(clamp(r.x),clamp(r.y),clamp(r.z))*.25;
-//        }
-//  }
-//  FILE *f = fopen("image.ppm", "w");         // Write image to PPM file.
-//  fprintf(f, "P3\n%d %d\n%d\n", w, h, 255);
-//  for (int i=0; i<w*h; i++)
-//    fprintf(f,"%d %d %d ", toInt(c[i].x), toInt(c[i].y), toInt(c[i].z));
-//}
 bool render(uint32* pScreen, Vec* pColour)
 {
-//  int w=1024, h=768, samps = argc==2 ? atoi(argv[1])/4 : 1; // # samples
-//  Ray cam(Vec(50,52,295.6), Vec(0,-0.042612,-1).norm()); // cam pos, dir
-//  Vec cx=Vec(w*.5135/h), cy=(cx%cam.d).norm()*.5135, r, *c=new Vec[w*h];
-  static const Ray cam(Vec(50, 52, 295.6), Vec(0, -0.042612, -1).norm()); // cam pos, dir
-  static const Vec cx = Vec(WINDOW_WIDTH*.5135/WINDOW_HEIGHT);
-	static const Vec cy = (cx%cam.d).norm()*.5135;
-	static Vec r;
-//	static unsigned short Xi[3];
-
 	bool done = false;
-
-  for (int y=0; y<WINDOW_HEIGHT; y++){                       // Loop over image rows
-    fprintf(stderr,"\rRendering (%d spp) %5.2f%%",SAMPLES*4,100.*y/(WINDOW_HEIGHT-1));
-    for (unsigned short x=0, Xi[3]={0,0,y*y*y}; x<WINDOW_WIDTH; x++)   // Loop cols
-      for (int sy=0, i=(WINDOW_HEIGHT-y-1)*WINDOW_WIDTH+x; sy<2; sy++)     // 2x2 subpixel rows
-        for (int sx=0; sx<2; sx++, r=Vec()){        // 2x2 subpixel cols
-          for (int s=0; s<SAMPLES; s++){
-            double r1=2*(rand()/(double)RAND_MAX), dx=r1<1 ? sqrt(r1)-1: 1-sqrt(2-r1);
-            double r2=2*(rand()/(double)RAND_MAX), dy=r2<1 ? sqrt(r2)-1: 1-sqrt(2-r2);
-            Vec d = cx*( ( (sx+.5 + dx)/2 + x)/WINDOW_WIDTH- .5) +
-                    cy*( ( (sy+.5 + dy)/2 + y)/WINDOW_HEIGHT - .5) + cam.d;
-            r = r + radiance(Ray(cam.o+d*140,d.norm()),0,Xi)*(1./SAMPLES);
+  int w=WINDOW_WIDTH, h=WINDOW_HEIGHT, samps = SAMPLES; // # samples
+  Ray cam(Vec(50,52,295.6), Vec(0,-0.042612,-1).norm()); // cam pos, dir
+  Vec cx=Vec(w*.5135/h), cy=(cx%cam.d).norm()*.5135, r;
+	static int y = 0;
+	static int x = 0;
+#pragma omp parallel for schedule(dynamic, 1) private(r)       // OpenMP
+	if (y<h)
+	{                       // Loop over image rows
+    fprintf(stderr,"\rRendering (%d spp) %5.2f%%",samps*4,100.*y/(h-1));
+		unsigned short Xi[3]={0, 0, y*y*y};
+		if (x<w)
+		{
+      for (int sy=0, i=(h-y-1)*w+x; sy<2; sy++)     // 2x2 subpixel rows
+			{
+        for (int sx=0; sx<2; sx++, r=Vec())
+				{        // 2x2 subpixel cols
+          for (int s=0; s<samps; s++)
+					{
+            double r1=2*RAND, dx=r1<1 ? sqrt(r1)-1: 1-sqrt(2-r1);
+            double r2=2*RAND, dy=r2<1 ? sqrt(r2)-1: 1-sqrt(2-r2);
+            Vec d = cx*( ( (sx+.5 + dx)/2 + x)/w - .5) +
+                    cy*( ( (sy+.5 + dy)/2 + y)/h - .5) + cam.d;
+            r = r + radiance(Ray(cam.o+d*140,d.norm()),0,Xi)*(1./samps);
           } // Camera rays are pushed ^^^^^ forward to start in interior
-//          c[i] = c[i] + Vec(clamp(r.x),clamp(r.y),clamp(r.z))*.25;
 					pColour[i] = pColour[i] + Vec(clamp(r.x),clamp(r.y),clamp(r.z))*.25;
 					pScreen[i] = toInt(pColour[i].x) | (toInt(pColour[i].y)<<8) | (toInt(pColour[i].z)<<16);
         }
-  }
-
-	/*
-	/////////////////////////////////////
-
-	for (int y = 0; y<WINDOW_HEIGHT; ++y)
-	{
-		Xi[0] = 0;
-		Xi[1] = 0;
-		Xi[2] = y*y*y;
-
-		for (int x = 0; x<WINDOW_WIDTH; ++x)
-		{
-			int i = (WINDOW_HEIGHT-y-1)*WINDOW_WIDTH+x;
-
-			for (int sy = 0; sy<2; ++sy)
-			{
-				for (int sx = 0; sx<2; ++sx, r = Vec())
-				{
-					for (int s = 0; s<SAMPLES; ++s)
-					{
-            double r1=2*(rand()/(double)RAND_MAX), dx=r1<1 ? sqrt(r1)-1: 1-sqrt(2-r1);
-            double r2=2*(rand()/(double)RAND_MAX), dy=r2<1 ? sqrt(r2)-1: 1-sqrt(2-r2);
-            Vec d = cx*( ( (sx+.5 + dx)/2 + x)/WINDOW_WIDTH - .5) +
-                    cy*( ( (sy+.5 + dy)/2 + y)/WINDOW_HEIGHT - .5) + cam.d;
-            r = r + radiance(Ray(cam.o+d*140,d.norm()),0,Xi)*(1./SAMPLES);
-
-//						printf("y:%d x:%d sy:%d sx:%d s:%d\n", y, x, sy, sx, s);
-					}
-
-					{
-						pColour[i] = pColour[i] + Vec(clamp(r.x),clamp(r.y),clamp(r.z))*.25;
-						pScreen[i] = toInt(pColour[i].x) | (toInt(pColour[i].y)<<8) | (toInt(pColour[i].z)<<16);
-						++sx;
-					}
-				}
 			}
+			++x;
 		}
-	}
-	*/
-
+		else
+		{
+			x=0;
+			++y;
+		}
+  }
+	else
 	{
 		done = true;
 	}
