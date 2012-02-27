@@ -105,22 +105,22 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
     radiance(reflRay,depth,Xi)*RP:radiance(Ray(x,tdir),depth,Xi)*TP) :
     radiance(reflRay,depth,Xi)*Re+radiance(Ray(x,tdir),depth,Xi)*Tr);
 }
-bool render(uint32* pScreen, Vec* pColour)
+double render(uint32* pScreen, Vec* pColour)
 {
-	bool done = false;
   int w=WINDOW_WIDTH, h=WINDOW_HEIGHT, samps = SAMPLES; // # samples
   Ray cam(Vec(50,52,295.6), Vec(0,-0.042612,-1).norm()); // cam pos, dir
   Vec cx=Vec(w*.5135/h), cy=(cx%cam.d).norm()*.5135, r;
 	static int y = 0;
 	static int x = 0;
-#pragma omp parallel for schedule(dynamic, 1) private(r)       // OpenMP
+
 	if (y<h)
 	{                       // Loop over image rows
-    fprintf(stderr,"\rRendering (%d spp) %5.2f%%",samps*4,100.*y/(h-1));
 		unsigned short Xi[3]={0, 0, y*y*y};
 		if (x<w)
 		{
-      for (int sy=0, i=(h-y-1)*w+x; sy<2; sy++)     // 2x2 subpixel rows
+			int i = (h-y-1)*w+x;
+#pragma omp parallel for schedule(dynamic, 1) private(r)       // OpenMP
+      for (int sy=0; sy<2; sy++)     // 2x2 subpixel rows
 			{
         for (int sx=0; sx<2; sx++, r=Vec())
 				{        // 2x2 subpixel cols
@@ -144,12 +144,10 @@ bool render(uint32* pScreen, Vec* pColour)
 			++y;
 		}
   }
-	else
-	{
-		done = true;
-	}
 
-	return done;
+	double pixel=(y*w)+x;
+	double total=(w*h);
+	return pixel/total;
 }
 
 //==============================================================================
@@ -214,6 +212,7 @@ int main(int argc, char* argv[])
 	double time = 0.0;
 	double timeCount = 0.0;
 	double frameCount = 0.0;
+	double elapsedTime = 0.0;
 
 	bool run = true;
 	while (run)
@@ -231,15 +230,27 @@ int main(int argc, char* argv[])
 		run &= !engine::CKeyboard::IsKeyPressed(GLFW_KEY_ESC);
 
 		// Path tracing
-		static bool done = false;
-		if (!done)
+		static double done = 0.0;
+		if (done < 1.0)
 		{
 			done = render(screen, pColour);
+			elapsedTime += pGC->GetFrameTime();
 		}
 
 		if (timeCount >= 1.0)
 		{
-			printf("*** Framerate: frames %.02f time %.02f %.02ffps done %d\n", frameCount, timeCount, frameCount/timeCount, done);
+			if (done < 1.0)
+			{
+				double hours = elapsedTime/3600.0;
+				double minutes = (elapsedTime-hours)/60.0;
+				double seconds = elapsedTime-hours-minutes;
+				
+				fprintf(stderr,"\rRendering (%d spp) %6.3f%%, %03d:%02d:%05.2f",SAMPLES*4, 100.0*done, static_cast<uint32>(hours), static_cast<uint32>(minutes), seconds);
+			}
+			else
+			{
+				printf("*** Framerate: frames %.02f time %.02f %.02ffps\n", frameCount, timeCount, frameCount/timeCount);
+			}
 			timeCount -= 1.0;
 			frameCount = 0.0;
 		}
