@@ -27,6 +27,10 @@
 //#define RAND erand48(Xi)
 //#endif // defined (WIN32)
 
+#if defined(WIN32)
+#define _USE_MATH_DEFINES
+#endif
+
 #include <math.h>   // smallpt, a Path Tracer by Kevin Beason, 2008
 //#include <stdlib.h> // Make : g++ -O3 -fopenmp smallpt.cpp -o smallpt
 //#include <stdio.h>  //        Remove "-fopenmp" for g++ version < 4.2
