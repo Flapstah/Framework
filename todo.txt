@@ -1,4 +1,7 @@
 Current:
+need to do some tests to make sure timing is working (renderer seems to show
+		about 0.6 seconds elapsed per real second passed)
+add function to get hours/minutes/seconds to timesource
 make glfw wrapper to init/deinit stuff in the right order
 make engine a separately compiled library
 
