@@ -28,6 +28,8 @@ namespace engine
 
 		virtual	uint32	GetFrameCount(void) const				{ return m_frameCount;						}
 
+		virtual void		GetTime(uint32* pHours, uint32* pMinutes, double* pSeconds);
+
 		virtual	void		AddReference(void)							{ ++m_referenceCount;							}
 		virtual	uint32	Release(void)										{ return --m_referenceCount;			}
 		// ~ITimeSource

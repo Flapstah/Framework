@@ -18,7 +18,10 @@ namespace engine
 
 		virtual	double	GetTickTime(void) const = 0;
 		virtual	double	GetFrameTime(void) const = 0;
+
 		virtual	uint32	GetFrameCount(void) const = 0;
+		
+		virtual void		GetTime(uint32* pHours, uint32* pMinutes, double* pSeconds) = 0;
 
 		virtual	void		AddReference(void) = 0;
 		virtual	uint32	Release(void) = 0;
