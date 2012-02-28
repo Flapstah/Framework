@@ -78,6 +78,7 @@ inline bool intersect(const Ray &r, double &t, int &id){
   for(int i=int(n);i--;) if((d=spheres[i].intersect(r))&&d<t){t=d;id=i;}
   return t<inf;
 }
+/*
 Vec radiance(const Ray &r, int depth, unsigned short *Xi){
   double t;                               // distance to intersection
   int id=0;                               // id of intersected object
@@ -105,6 +106,73 @@ Vec radiance(const Ray &r, int depth, unsigned short *Xi){
     radiance(reflRay,depth,Xi)*RP:radiance(Ray(x,tdir),depth,Xi)*TP) :
     radiance(reflRay,depth,Xi)*Re+radiance(Ray(x,tdir),depth,Xi)*Tr);
 }
+*/
+// From forward.cpp
+Vec radiance(const Ray &r_, int depth_, unsigned short *Xi){
+  double t;                               // distance to intersection
+  int id=0;                               // id of intersected object
+  Ray r=r_;
+  int depth=depth_;
+  // L0 = Le0 + f0*(L1)
+  //    = Le0 + f0*(Le1 + f1*L2)
+  //    = Le0 + f0*(Le1 + f1*(Le2 + f2*(L3))
+  //    = Le0 + f0*(Le1 + f1*(Le2 + f2*(Le3 + f3*(L4)))
+  //    = ...
+  //    = Le0 + f0*Le1 + f0*f1*Le2 + f0*f1*f2*Le3 + f0*f1*f2*f3*Le4 + ...
+  // 
+  // So:
+  // F = 1
+  // while (1){
+  //   L += F*Lei
+  //   F *= fi
+  // }
+  Vec cl(0,0,0);   // accumulated color
+  Vec cf(1,1,1);  // accumulated reflectance
+  while (1){
+    if (!intersect(r, t, id)) return cl; // if miss, return black
+    const Sphere &obj = spheres[id];        // the hit object
+    Vec x=r.o+r.d*t, n=(x-obj.p).norm(), nl=n.dot(r.d)<0?n:n*-1, f=obj.c;
+    double p = f.x>f.y && f.x>f.z ? f.x : f.y>f.z ? f.y : f.z; // max refl
+    cl = cl + cf.mult(obj.e);
+    if (++depth>5) if (RAND<p) f=f*(1/p); else return cl; //R.R.
+    cf = cf.mult(f);
+    if (obj.refl == DIFF){                  // Ideal DIFFUSE reflection
+      double r1=2*M_PI*RAND, r2=RAND, r2s=sqrt(r2);
+      Vec w=nl, u=((fabs(w.x)>.1?Vec(0,1):Vec(1))%w).norm(), v=w%u;
+      Vec d = (u*cos(r1)*r2s + v*sin(r1)*r2s + w*sqrt(1-r2)).norm();
+      //return obj.e + f.mult(radiance(Ray(x,d),depth,Xi));
+      r = Ray(x,d);
+      continue;
+    } else if (obj.refl == SPEC){           // Ideal SPECULAR reflection
+      //return obj.e + f.mult(radiance(Ray(x,r.d-n*2*n.dot(r.d)),depth,Xi));
+      r = Ray(x,r.d-n*2*n.dot(r.d));
+      continue;
+    }
+    Ray reflRay(x, r.d-n*2*n.dot(r.d));     // Ideal dielectric REFRACTION
+    bool into = n.dot(nl)>0;                // Ray from outside going in?
+    double nc=1, nt=1.5, nnt=into?nc/nt:nt/nc, ddn=r.d.dot(nl), cos2t;
+    if ((cos2t=1-nnt*nnt*(1-ddn*ddn))<0){    // Total internal reflection
+      //return obj.e + f.mult(radiance(reflRay,depth,Xi));
+      r = reflRay;
+      continue;
+    }
+    Vec tdir = (r.d*nnt - n*((into?1:-1)*(ddn*nnt+sqrt(cos2t)))).norm();
+    double a=nt-nc, b=nt+nc, R0=a*a/(b*b), c = 1-(into?-ddn:tdir.dot(n));
+    double Re=R0+(1-R0)*c*c*c*c*c,Tr=1-Re,P=.25+.5*Re,RP=Re/P,TP=Tr/(1-P);
+    // return obj.e + f.mult(erand48(Xi)<P ?
+    //                       radiance(reflRay,    depth,Xi)*RP:
+    //                       radiance(Ray(x,tdir),depth,Xi)*TP);
+    if (RAND<P){
+      cf = cf*RP;
+      r = reflRay;
+    } else {
+      cf = cf*TP;
+      r = Ray(x,tdir);
+    }
+    continue;
+  }
+}
+
 double render(uint32* pScreen, Vec* pColour)
 {
   int w=WINDOW_WIDTH, h=WINDOW_HEIGHT, samps = SAMPLES; // # samples
@@ -241,11 +309,11 @@ int main(int argc, char* argv[])
 		{
 			if (done < 1.0)
 			{
-				double hours = elapsedTime/3600.0;
-				double minutes = (elapsedTime-hours)/60.0;
-				double seconds = elapsedTime-hours-minutes;
-				
-				fprintf(stderr,"\rRendering (%d spp) %6.3f%%, %03d:%02d:%05.2f",SAMPLES*4, 100.0*done, static_cast<uint32>(hours), static_cast<uint32>(minutes), seconds);
+				uint32 hours = static_cast<uint32>(elapsedTime/3600.0);
+				uint32 minutes = static_cast<uint32>((elapsedTime-(hours*3600))/60.0);
+				double seconds = elapsedTime-(hours*3600)-(minutes*60);
+
+				printf("\rRendering (%d spp) %6.3f%%, %03d:%02d:%05.2f",SAMPLES*4, 100.0*done, hours, minutes, seconds);
 			}
 			else
 			{
