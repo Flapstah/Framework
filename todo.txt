@@ -1,11 +1,15 @@
 Current:
-need to do some tests to make sure timing is working (renderer seems to show
-		about 0.6 seconds elapsed per real second passed)
+why is the tick being called too often?  Maybe need something other than a
+simple frame count to compare during tick?  Maybe just store the parent timer
+time?
 add function to get hours/minutes/seconds to timesource
 make glfw wrapper to init/deinit stuff in the right order
 make engine a separately compiled library
 
 Done:
+need to do some tests to make sure timing is working (renderer seems to show
+		about 0.6 seconds elapsed per real second passed) - don't use game clock for
+		real time operations as frame lengths are capped!
 remove platform_ functions where possible (e.g. RealTimeClock)
 remove float versions of time and have tick return the time elapsed
 make time class construct/destruct in global scope; move timers to concrete
