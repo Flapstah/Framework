@@ -32,7 +32,7 @@ namespace engine
 			elapsedTime -= *pMinutes*60;
 		}
 
-		if (pSesonds != NULL)
+		if (pSeconds != NULL)
 		{
 			*pSeconds = elapsedTime;
 		}

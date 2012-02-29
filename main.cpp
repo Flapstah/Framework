@@ -302,7 +302,7 @@ int main(int argc, char* argv[])
 		if (done < 1.0)
 		{
 			done = render(screen, pColour);
-			elapsedTime += pGC->GetFrameTime();
+			elapsedTime += pRTC->GetFrameTime();
 		}
 
 		if (timeCount >= 1.0)
@@ -315,14 +315,19 @@ int main(int argc, char* argv[])
 
 				printf("\rRendering (%d spp) %6.3f%%, %03d:%02d:%05.2f",SAMPLES*4, 100.0*done, hours, minutes, seconds);
 			}
-			else
-			{
-				printf("*** Framerate: frames %.02f time %.02f %.02ffps\n", frameCount, timeCount, frameCount/timeCount);
-			}
+//			else
+//			{
+//				printf("*** Framerate: frames %.02f time %.02f %.02ffps\n", frameCount, timeCount, frameCount/timeCount);
+//			}
 			timeCount -= 1.0;
 			frameCount = 0.0;
 		}
 	}
+
+	uint32 hours = static_cast<uint32>(elapsedTime/3600.0);
+	uint32 minutes = static_cast<uint32>((elapsedTime-(hours*3600))/60.0);
+	double seconds = elapsedTime-(hours*3600)-(minutes*60);
+	printf("\rRendering (%d spp) %6.3f%%, %03d:%02d:%05.2f\n",SAMPLES*4, 100.0, hours, minutes, seconds);
 
 	printf("*** Writing image file\n");
   FILE *f = fopen("image.ppm", "w");         // Write image to PPM file.
