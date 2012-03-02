@@ -136,7 +136,7 @@ namespace engine
 
 	//============================================================================
 
-	float CDisplay::GetDisplayScale(void)
+	float CDisplay::GetDisplayScale(void) const
 	{
 		return m_displayScale;
 	}

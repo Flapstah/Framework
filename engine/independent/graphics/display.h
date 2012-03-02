@@ -20,7 +20,7 @@ namespace engine
 
 			bool Update(const void* pData);
 			void SetDisplayScale(float scale);
-			float GetDisplayScale(void);
+			float GetDisplayScale(void) const;
 
 		protected:
 
